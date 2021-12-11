@@ -1,0 +1,32 @@
+version: '3'
+services:
+  dev_db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=mada
+      - POSTGRES_PASSWORD=mada
+    volumes:
+      - /var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    container_name: postgres_dev_db
+
+  test_db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=mada
+      - POSTGRES_PASSWORD=mada
+    volumes:
+      - /var/lib/postgresql/data
+    ports:
+      - '5433:5432'
+    container_name: postgres_test_db
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=mada@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=mada
+    ports:
+      - '5555:80'
