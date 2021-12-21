@@ -14,7 +14,7 @@ if os.path.exists(".env"):
             os.environ[var[0]] = var[1]
 
 from app import create_app
-# from app.models import Donation, Project, Contact, ContactType, MuUser
+from app.models import Volunteer, Admin
 
 manager = Manager(create_app)
 # e.g. "python manage.py --config development runserver"
