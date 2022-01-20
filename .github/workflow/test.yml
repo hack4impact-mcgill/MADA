@@ -1,0 +1,30 @@
+name: Test
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Build the stack
+              run: docker-compose up -d
+            - name: Set up Python
+              uses: actions/setup-python@v2
+            - name: Install dependencies
+              run: |
+                  cd backend
+                  python -m pip install --upgrade pip
+                  pip install -r requirements.txt
+            - name: Test
+              env:
+                  TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+              run: |
+                  cd backend
+                  python manage.py test

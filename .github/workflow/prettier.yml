@@ -1,0 +1,21 @@
+name: client-lint
+
+on: [pull_request]
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Set up Node
+              uses: actions/setup-node@v2
+
+            - name: Install Prettier
+              run: |
+                  cd frontend
+                  npm install prettier
+            - name: Prettier
+              run: |
+                  cd frontend
+                  npx prettier --check "src/**/*.{ts,tsx}"
