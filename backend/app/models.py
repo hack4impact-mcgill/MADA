@@ -5,11 +5,7 @@ from datetime import datetime
 
 
 class UserMixin(object):
-    id = db.Column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4
-    )
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = db.Column(db.String(64), nullable=False)
     phone_number = db.Column(db.String(64), nullable=False)
     email_address = db.Column(db.String(64), nullable=False)
