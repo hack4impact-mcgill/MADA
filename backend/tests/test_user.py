@@ -40,6 +40,7 @@ class UserTestCase(unittest.TestCase):
                 "phone_number": "123456789",
                 "email_address": "volunteer@gmail.com",
                 "username": "volunteer",
+                "tasks": [],
             },
         )
 
