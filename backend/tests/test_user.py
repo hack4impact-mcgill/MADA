@@ -23,7 +23,7 @@ class UserTestCase(unittest.TestCase):
             phone_number="123456789",
             email_address="volunteer@gmail.com",
             username="volunteer",
-            start_date=datetime.now()
+            start_date=datetime.now(),
         )
         db.session.add(v)
         db.session.commit()
@@ -33,12 +33,15 @@ class UserTestCase(unittest.TestCase):
         self.assertNotEquals(volunteer_data.pop("id"), None)
         self.assertNotEquals(volunteer_data.pop("start_date"), None)
 
-        self.assertEquals(volunteer_data, {
-            "name": "volunteer",
-            "phone_number": "123456789",
-            "email_address": "volunteer@gmail.com",
-            "username": "volunteer"
-        })
+        self.assertEquals(
+            volunteer_data,
+            {
+                "name": "volunteer",
+                "phone_number": "123456789",
+                "email_address": "volunteer@gmail.com",
+                "username": "volunteer",
+            },
+        )
 
     def test_admin_model(self):
         a = Admin(
@@ -46,7 +49,7 @@ class UserTestCase(unittest.TestCase):
             phone_number="123456789",
             email_address="admin@gmail.com",
             username="admin",
-            job_title="admin"
+            job_title="admin",
         )
         db.session.add(a)
         db.session.commit()
@@ -54,10 +57,13 @@ class UserTestCase(unittest.TestCase):
         admin_data = admin.serialize
         self.assertNotEquals(admin_data.pop("id"), None)
 
-        self.assertEquals(admin_data, {
-            "name": "admin",
-            "phone_number": "123456789",
-            "email_address": "admin@gmail.com",
-            "username": "admin",
-            "job_title": "admin"
-        })
+        self.assertEquals(
+            admin_data,
+            {
+                "name": "admin",
+                "phone_number": "123456789",
+                "email_address": "admin@gmail.com",
+                "username": "admin",
+                "job_title": "admin",
+            },
+        )
