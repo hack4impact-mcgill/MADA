@@ -1,8 +1,8 @@
-"""add meal deliv model
+"""clean up task models
 
-Revision ID: bebe68407317
-Revises: 6c30574fcba2
-Create Date: 2022-01-25 22:33:12.863123
+Revision ID: 01d7dd723b8f
+Revises: eede89c1aa5c
+Create Date: 2022-01-26 21:03:50.309755
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = "bebe68407317"
-down_revision = "6c30574fcba2"
+revision = "01d7dd723b8f"
+down_revision = "eede89c1aa5c"
 branch_labels = None
 depends_on = None
 
@@ -21,12 +21,16 @@ def upgrade():
     op.create_table(
         "meal_delivery_tasks",
         sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column("address", sa.String(length=64), nullable=False),
+        sa.Column("date", sa.Date(), nullable=False),
+        sa.Column("time", sa.Time(), nullable=False),
+        sa.Column("is_complete", sa.Boolean(), nullable=True),
         sa.Column("quantity", sa.Integer(), nullable=False),
         sa.Column("type", sa.String(length=64), nullable=False),
-        sa.Column("task_id", postgresql.UUID(as_uuid=True), nullable=True),
+        sa.Column("volunteer_id", postgresql.UUID(as_uuid=True), nullable=True),
         sa.ForeignKeyConstraint(
-            ["task_id"],
-            ["tasks.id"],
+            ["volunteer_id"],
+            ["volunteers.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
     )
