@@ -25,13 +25,19 @@ class UserMixin(object):
 class Volunteer(UserMixin, db.Model):
     __tablename__ = "volunteers"
     start_date = db.Column(db.DateTime, default=datetime.utcnow)
-    tasks = db.relationship("Task", backref=db.backref("volunteers"), lazy=True)
+    meal_delivery_tasks = db.relationship(
+        "MealDeliveryTask", backref=db.backref("volunteers"), lazy=True
+    )
 
     @property
     def serialize(self):
         user_data = super().serialize
-        user_data.update({"start_date": self.start_date})
-        user_data.update({"tasks": Task.serialize_list(self.tasks)})
+        user_data.update(
+            {
+                "start_date": self.start_date,
+                "meal_delivery_tasks": Task.serialize_list(self.meal_delivery_tasks),
+            }
+        )
         return user_data
 
 
@@ -46,17 +52,12 @@ class Admin(UserMixin, db.Model):
         return user_data
 
 
-class Task(db.Model):
-    __tablename__ = "tasks"
+class Task(object):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     address = db.Column(db.String(64), nullable=False)
     date = db.Column(db.Date, nullable=False)
     time = db.Column(db.Time, nullable=False)
     is_complete = db.Column(db.Boolean, default=False)
-    volunteer_id = db.Column(UUID(as_uuid=True), db.ForeignKey("volunteers.id"))
-    meal_delivery_tasks = db.relationship(
-        "MealDeliveryTask", backref=db.backref("tasks"), lazy=True
-    )
 
     @property
     def serialize(self):
@@ -66,8 +67,6 @@ class Task(db.Model):
             "date": self.date,
             "time": self.time,
             "is_complete": self.is_complete,
-            "volunteer_id": self.volunteer_id,
-            "meal_delivery_tasks": Task.serialize_list(self.meal_delivery_tasks),
         }
 
     @staticmethod
@@ -78,18 +77,20 @@ class Task(db.Model):
         return json_tasks
 
 
-class MealDeliveryTask(db.Model):
+class MealDeliveryTask(Task, db.Model):
     __tablename__ = "meal_delivery_tasks"
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     quantity = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(64), nullable=False)
-    task_id = db.Column(UUID(as_uuid=True), db.ForeignKey("tasks.id"))
+    volunteer_id = db.Column(UUID(as_uuid=True), db.ForeignKey("volunteers.id"))
 
     @property
     def serialize(self):
-        return {
-            "id": self.id,
-            "quantity": self.quantity,
-            "type": self.type,
-            "task_id": self.task_id,
-        }
+        task_data = super().serialize
+        task_data.update(
+            {
+                "quantity": self.quantity,
+                "type": self.type,
+                "volunteer_id": self.volunteer_id,
+            }
+        )
+        return task_data
