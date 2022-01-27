@@ -38,10 +38,31 @@ class UserTestCase(unittest.TestCase):
             {
                 "address": "Test",
                 "date": curr_datetime.date(),
-                "time": curr_datetime.time(),
+                "time": curr_datetime.time().isoformat(),
                 "is_complete": False,
                 "quantity": 1,
                 "type": "test",
                 "volunteer_id": None,
             },
         )
+
+    def test_delete_a_meal_delivery_task(self):
+        curr_datetime = datetime.now()
+        m = MealDeliveryTask(
+            address="Test",
+            date=curr_datetime,
+            time=curr_datetime,
+            is_complete=False,
+            quantity=1,
+            type="test",
+        )
+        db.session.add(m)
+        db.session.commit()
+        task = MealDeliveryTask.query.filter_by(id=m.id).first()
+        task = task.serialize
+
+        response = self.client.delete("/meal_delivery_task/{}".format(m.id))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.delete("/meal_delivery_task/{}".format(m.id))
+        self.assertEqual(response.status_code, 404)

@@ -65,7 +65,7 @@ class Task(object):
             "id": self.id,
             "address": self.address,
             "date": self.date,
-            "time": self.time,
+            "time": self.time.isoformat(),
             "is_complete": self.is_complete,
         }
 
