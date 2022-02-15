@@ -39,6 +39,14 @@ def create_app(config_name):
         meal_delivery_task_blueprint, url_prefix="/meal_delivery_task"
     )
 
+
+
+    from .user import user as user_blueprint
+
+    app.register_blueprint(
+        user_blueprint, url_prefix="/user"
+    )
+
     # create route like this
     # from .contact import contact as contact_blueprint
     # app.register_blueprint(contact_blueprint, url_prefix="/contact")
