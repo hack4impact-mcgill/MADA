@@ -75,17 +75,17 @@ class UserTestCase(unittest.TestCase):
         d = datetime.now().isoformat()
         id = uuid.uuid4()
         v = Volunteer(
+            id = id,
             name="volunteer",
             phone_number="123456789",
             email_address="volunteer@gmail.com",
             username="volunteer",
             start_date=d,
+            meal_delivery_tasks= []
         )
+
         db.session.add(v)
         db.session.commit()
-        volunteer = Volunteer.query.filter_by(name="volunteer").first()
-        volunteer_data = volunteer.serialize
-
         #update a user
         new_fields = {
             "name": "Test2",
@@ -96,9 +96,18 @@ class UserTestCase(unittest.TestCase):
         }
 
         response = self.client.put(
-                "/user/{}".format(v.id),
+                "/user/{}".format(id),
                 content_type="application/json",
-                data=json.dumps(new_fields, default=str),
+                data=json.dumps(new_fields),
             )
+        self.assertEqual(response.status_code, 200)
         json_response = json.loads(response.get_data(as_text=True))
         self.assertDictContainsSubset(new_fields, json_response)
+
+        #user doesnt exist
+        response = self.client.put(
+            "/user/{}".format(uuid.uuid4()),
+            content_type="application/json",
+            data=json.dumps(new_fields),
+        )
+        self.assertEqual(response.status_code, 404)
