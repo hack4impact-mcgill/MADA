@@ -16,7 +16,7 @@ def update_user(id):
             u.start_date = start_date
     elif u2 is not None:
         u = u2
-        job_title = data.get("start_date")
+        job_title = data.get("job_title")
         if job_title is not None:
             u.job_title = job_title
     else:
