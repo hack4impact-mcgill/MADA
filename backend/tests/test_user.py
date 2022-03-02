@@ -1,7 +1,9 @@
 import unittest
+import json
 from app import create_app, db
 from app.models import Volunteer, Admin
 from datetime import datetime
+import uuid
 
 
 class UserTestCase(unittest.TestCase):
@@ -68,3 +70,44 @@ class UserTestCase(unittest.TestCase):
                 "job_title": "admin",
             },
         )
+
+    def test_update_a_user(self):
+        d = datetime.now().isoformat()
+        id = uuid.uuid4()
+        v = Volunteer(
+            id=id,
+            name="volunteer",
+            phone_number="123456789",
+            email_address="volunteer@gmail.com",
+            username="volunteer",
+            start_date=d,
+            meal_delivery_tasks=[],
+        )
+
+        db.session.add(v)
+        db.session.commit()
+        # update a user
+        new_fields = {
+            "name": "Test2",
+            "phone_number": "987654321",
+            "email_address": "test@test.com",
+            "username": "test1234",
+            "start_date": d,
+        }
+
+        response = self.client.put(
+            "/user/{}".format(id),
+            content_type="application/json",
+            data=json.dumps(new_fields),
+        )
+        self.assertEqual(response.status_code, 200)
+        json_response = json.loads(response.get_data(as_text=True))
+        self.assertDictContainsSubset(new_fields, json_response)
+
+        # user doesnt exist
+        response = self.client.put(
+            "/user/{}".format(uuid.uuid4()),
+            content_type="application/json",
+            data=json.dumps(new_fields),
+        )
+        self.assertEqual(response.status_code, 404)
