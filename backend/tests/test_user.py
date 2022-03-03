@@ -111,3 +111,30 @@ class UserTestCase(unittest.TestCase):
             data=json.dumps(new_fields),
         )
         self.assertEqual(response.status_code, 404)
+
+
+
+def test_delete_a_user(self):
+        d = datetime.now().isoformat()
+        id = uuid.uuid4()
+        v = Volunteer(
+            id=id,
+            name="volunteer",
+            phone_number="123456789",
+            email_address="volunteer@gmail.com",
+            username="volunteer",
+            start_date=d,
+            meal_delivery_tasks=[],
+        )
+
+        db.session.add(v)
+        db.session.commit()
+
+        task = Volunteer.query.filter_by(id=m.id).first()
+        task = task.serialize
+
+        response = self.client.delete("/user/{}".format(m.id))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.delete("/user/{}".format(m.id))
+        self.assertEqual(response.status_code, 404)
