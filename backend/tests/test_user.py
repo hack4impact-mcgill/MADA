@@ -113,8 +113,8 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
 
-
-def test_delete_a_user(self):
+        
+    def test_delete_a_user(self):   
         d = datetime.now().isoformat()
         id = uuid.uuid4()
         v = Volunteer(
@@ -130,11 +130,8 @@ def test_delete_a_user(self):
         db.session.add(v)
         db.session.commit()
 
-        task = Volunteer.query.filter_by(id=m.id).first()
-        task = task.serialize
-
-        response = self.client.delete("/user/{}".format(m.id))
+        response = self.client.delete("/user/{}".format(id))
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.delete("/user/{}".format(m.id))
+        response = self.client.delete("/user/{}".format(id))
         self.assertEqual(response.status_code, 404)
