@@ -38,6 +38,7 @@ def update_user(id):
     db.session.commit()
     return jsonify(u.serialize)
 
+
 # delete a user by id
 @user.route("/<uuid:id>", methods=["DELETE"])
 def delete_user(id):
@@ -53,4 +54,3 @@ def delete_user(id):
     db.session.delete(u)
     db.session.commit()
     return jsonify(u.serialize)
-    

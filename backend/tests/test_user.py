@@ -112,9 +112,7 @@ class UserTestCase(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
-
-        
-    def test_delete_a_user(self):   
+    def test_delete_a_user(self):
         d = datetime.now().isoformat()
         id = uuid.uuid4()
         v = Volunteer(
