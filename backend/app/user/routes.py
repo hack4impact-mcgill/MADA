@@ -37,3 +37,26 @@ def update_user(id):
     db.session.add(u)
     db.session.commit()
     return jsonify(u.serialize)
+
+# delete a user by id
+@user.route("/<uuid:id>", methods=["DELETE"])
+def delete_user(id):
+    data = request.get_json(force=True)
+    u1 = Admin.query.filter_by(id=id).first()
+    u2 = Volunteer.query.filter_by(id=id).first()
+    if u1 is not None:
+        u = u1
+        job_title = data.get("job_title")
+        if job_title is not None:
+            u.job_title = job_title
+    elif u2 is not None:
+        u = u2
+        start_date = data.get("start_date")
+        if start_date is not None:
+            u.start_date = start_date
+    else:
+        abort(404, "No user found with specified ID.")
+
+    db.session.delete(u)
+    db.session.commit()
+    return jsonify(u.serialize)
