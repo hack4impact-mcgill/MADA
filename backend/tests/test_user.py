@@ -138,7 +138,14 @@ class UserTestCase(unittest.TestCase):
         db.session.commit()
 
         response = self.client.delete("/user/{}".format(id))
+
+        #test response status code is correct 
         self.assertEqual(response.status_code, 200)
+
+        #test response body is correct 
+        self.assertEqual(response.json["name"], "volunteer")
+        self.assertEqual(response.json["email_address"], "volunteer@gmail.com")
+        self.assertEqual(response.json["start_date"], d)
 
         response = self.client.delete("/user/{}".format(id))
         self.assertEqual(response.status_code, 404)
