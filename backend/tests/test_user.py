@@ -1,7 +1,7 @@
 import unittest
 import json
 from app import create_app, db
-from app.models import Volunteer, Admin
+from app.models import Volunteer, Admin, MealDeliveryTask
 from datetime import datetime
 import uuid
 
@@ -110,4 +110,42 @@ class UserTestCase(unittest.TestCase):
             content_type="application/json",
             data=json.dumps(new_fields),
         )
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_a_user(self):
+        curr_datetime = datetime.now()
+        m = MealDeliveryTask(
+            address="Test",
+            date=curr_datetime,
+            time=curr_datetime,
+            is_complete=False,
+            quantity=1,
+            type="test",
+        )
+        d = datetime.now().isoformat()
+        id = uuid.uuid4()
+        v = Volunteer(
+            id=id,
+            name="volunteer",
+            phone_number="123456789",
+            email_address="volunteer@gmail.com",
+            username="volunteer",
+            start_date=d,
+            meal_delivery_tasks=[m],
+        )
+
+        db.session.add(v)
+        db.session.commit()
+
+        response = self.client.delete("/user/{}".format(id))
+
+        # test response status code is correct
+        self.assertEqual(response.status_code, 200)
+
+        # test response body is correct
+        self.assertEqual(response.json["name"], "volunteer")
+        self.assertEqual(response.json["email_address"], "volunteer@gmail.com")
+        self.assertEqual(response.json["start_date"], d)
+
+        response = self.client.delete("/user/{}".format(id))
         self.assertEqual(response.status_code, 404)
