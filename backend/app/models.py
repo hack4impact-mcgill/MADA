@@ -34,7 +34,7 @@ class Volunteer(UserMixin, db.Model):
         user_data = super().serialize
         user_data.update(
             {
-                "start_date": self.start_date,
+                "start_date": self.start_date.isoformat(),
                 "meal_delivery_tasks": Task.serialize_list(self.meal_delivery_tasks),
             }
         )
@@ -64,7 +64,7 @@ class Task(object):
         return {
             "id": self.id,
             "address": self.address,
-            "date": self.date,
+            "date": self.date.isoformat(),
             "time": self.time.isoformat(),
             "is_complete": self.is_complete,
         }
